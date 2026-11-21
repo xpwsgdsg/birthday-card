@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>这个不是病毒</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    font-family: system-ui, -apple-system, "Microsoft YaHei", sans-serif;
+    background: linear-gradient(135deg, #ffd6e7, #fff3c4, #c7f0ff);
+    overflow-x: hidden;
+    text-align: center;
+    color: #4a2c3a;
+  }
+  .card {
+    width: min(92vw, 440px);
+    padding: 34px 24px;
+    border-radius: 28px;
+    background: rgba(255, 255, 255, 0.78);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 20px 50px rgba(180, 80, 120, 0.18);
+    position: relative;
+    z-index: 2;
+  }
+  h1 {
+    font-size: 28px;
+    line-height: 1.35;
+    margin: 0 0 12px;
+  }
+  .sub {
+    color: #8a5a6a;
+    line-height: 1.7;
+    margin: 0 0 24px;
+    font-size: 15px;
+  }
+  button {
+    border: 0;
+    border-radius: 999px;
+    padding: 14px 28px;
+    font-size: 17px;
+    cursor: pointer;
+    color: #fff;
+    background: linear-gradient(135deg, #ff6b9d, #ff9a5a);
+    box-shadow: 0 8px 20px rgba(255, 107, 157, 0.35);
+    transition: transform 0.15s ease;
+  }
+  button:active { transform: scale(0.96); }
+  #msg {
+    display: none;
+    margin-top: 24px;
+    line-height: 1.9;
+    font-size: 16px;
+  }
+  #msg.show {
+    display: block;
+    animation: fade 0.8s ease;
+  }
+  .sign {
+    color: #8a5a6a;
+    font-size: 14px;
+  }
+  @keyframes fade {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .heart {
+    position: fixed;
+    bottom: -30px;
+    font-size: 20px;
+    pointer-events: none;
+    z-index: 1;
+    animation: float 4s linear forwards;
+  }
+  @keyframes float {
+    to {
+      transform: translateY(-110vh) rotate(30deg);
+      opacity: 0;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .heart { display: none; }
+    #msg.show { animation: none; }
+  }
+</style>
+</head>
+<body>
+
+  <main class="card">
+    <h1>生日快乐！</h1>
+    <p class="sub">🎂</p>
+    <button id="btn" type="button">想不想点一下 </button>
+
+    <div id="msg" aria-live="polite">
+      <p>
+        愿你新的一岁<br>
+        开心多一点，烦恼少一点<br>
+        想做的事都能慢慢实现<br>
+        <span class="sign">—— 来自xpw的祝福</span>
+      </p>
+    </div>
+  </main>
+
+  <!-- 可选音乐：把 birthday.mp3 放在同目录；不用音乐就删除下面这一整行 -->
+
+<script>
+(() => {
+  const btn = document.getElementById('btn');
+  const msg = document.getElementById('msg');
+  const bgm = document.getElementById('bgm');
+  const icons = ['💗', '✨', '🎉', '💖'];
+
+  // 第 1 个对象 = 第一次点击后显示
+  // 第 2 个对象 = 第二次点击后显示
+  const stages = [
+    {
+      btn: '后面应该没东西了？',
+      msg: `愿你新的一岁<br>
+            开心多一点，烦恼少一点<br>
+            想做的事都能慢慢实现<br>
+            <span class="sign">—— 来自xpw的祝福</span>`
+    },
+    {
+      btn: '你还点？',
+      msg: `祝你<br>
+            福如东海，寿比南山<br>
+            哈哈哈哈！<br>
+            <span class="sign">—— 来自xpw的不正经祝福</span>`
+    },
+   {
+   	btn: '时间有限，真没了',
+	  msg: `地球online系统故障<br>
+            已为您矫正系统，自动返回18岁<br>
+        <span class="sign">—— 来自ai的祝福，感谢ai</span>`
+   }
+  ];
+
+  let step = 0;
+
+  btn.addEventListener('click', () => {
+    const s = stages[Math.min(step, stages.length - 1)];
+    btn.textContent = s.btn;
+    msg.innerHTML = `<p>${s.msg}</p>`;
+    msg.classList.add('show');
+    step++;
+
+    if (bgm) {
+      bgm.play().catch(() => {
+        // 没有音乐文件或浏览器限制时静默失败，不影响贺卡
+      });
+    }
+
+    for (let i = 0; i < 18; i++) {
+      const h = document.createElement('div');
+      h.className = 'heart';
+      h.textContent = icons[i % icons.length];
+      h.style.left = Math.random() * 100 + 'vw';
+      h.style.animationDelay = Math.random() * 1.5 + 's';
+      h.style.fontSize = (16 + Math.random() * 16) + 'px';
+      document.body.appendChild(h);
+      setTimeout(() => h.remove(), 6500);
+    }
+  });
+})();
+</script>
+
+</body>
+</html>
